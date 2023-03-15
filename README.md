@@ -136,4 +136,4 @@ Ce-Type:mobile       iphone     14-256GB
 
 You can similar promts to check if message is received at Broker src-topic.
 
-
+![DemoResult](DemoResult.png)
