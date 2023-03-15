@@ -34,7 +34,7 @@ spec:
     
 
 
-### Create KafkaSource using Kafka Knative Broker -------  show from UI
+### Create KafkaSource using Kafka Knative Broker
 ```  
 apiVersion: sources.knative.dev/v1beta1
 kind: KafkaSource
@@ -67,7 +67,7 @@ spec:
 ```
 
 
-### Create KafkaSink referred by Trigger to deliver message ------- using + sign
+### Create KafkaSink referred by Trigger to deliver message
 ```
 apiVersion: eventing.knative.dev/v1alpha1
 kind: KafkaSink
@@ -80,7 +80,7 @@ spec:
 ```
 
 
-### Create Online and Mobile Order Trigger ------- show UI first to add Trigger from Broker UI and then  create using + sign
+### Create Online and Mobile Order Trigger
 ```
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
@@ -115,18 +115,19 @@ spec:
      name: kafka-sink    
 ```
 
-### Connect to kafka broker pod
+### Connect to kafka broker pod to mimic online order app and mobile order app
 
-oc rsh my-cluster-kafka-0
+open shell prompt in kafka pod <br>
+  `oc rsh my-cluster-kafka-0` <br>
 
-Producer
+**Producer**<br>
  
-bin/kafka-console-producer.sh --broker-list my-cluster-kafka-bootstrap:9092 --topic src-topic  --property parse.key=true --property parse.headers=true
+`bin/kafka-console-producer.sh --broker-list my-cluster-kafka-bootstrap:9092 --topic src-topic  --property parse.key=true --property parse.headers=true`<br>
 
 Ce-Type:online        iphone	13-128GB
 Ce-Type:mobile       iphone     14-256GB
 
-Consumer showing kafka sink
+**Consumer showing kafka sink**<br>
 
-bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic sink-topic --from-beginning
+`bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic sink-topic --from-beginning`
 
