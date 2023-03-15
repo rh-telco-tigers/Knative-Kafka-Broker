@@ -132,5 +132,8 @@ Ce-Type:mobile       iphone     14-256GB
 
 **Consumer showing kafka sink**<br>
 
-`bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic sink-topic --from-beginning`
+`bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic sink-topic --from-beginning` <br>
+
+You can similar promts to check if message is received at Broker src-topic.
+
 
