@@ -1,1 +1,132 @@
 # Knative-Kafka-Broker
+
+
+## Pre-requisites 
+- Install AMQ Streams operator and create an instance of Kafka in a project ‘knkafkabroker’
+- Install OpenShift Serverless operator and create instances of Knative Serving, Knative Eventing and Knative Kafka in their respective projects.
+- Create knative serving instance using default info.
+- Create Knatve eventing using default info
+- Create Knative Kafka instance selecting source enabled, broker enabled and sink enabled option in OCP WebConsole form UI. 
+- Create kafka topics ‘src-topic’ and ‘sink-topic’
+
+
+### Create Knative Service 
+
+`kn service create legacy-app --image <any-legacy-app-image>`
+
+
+
+### Create Kafka Knative Broker in project knkafkabroker
+```
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  annotations:
+    eventing.knative.dev/broker.class: Kafka
+  name: kafka-broker
+spec:
+  config:
+    apiVersion: v1
+    kind: ConfigMap
+    name: kafka-broker-config
+    namespace: knative-eventing
+```    
+    
+
+
+### Create KafkaSource using Kafka Knative Broker -------  show from UI
+    
+apiVersion: sources.knative.dev/v1beta1
+kind: KafkaSource
+metadata:
+  name: kafka-source
+  namespace: user1
+spec:
+  bootstrapServers:
+    - 'my-cluster-kafka-bootstrap.knkafkabroker.svc:9092'
+  consumerGroup: cg
+  consumers: 1
+  initialOffset: latest
+  net:
+    sasl:
+      password: {}
+      type: {}
+      user: {}
+    tls:
+      caCert: {}
+      cert: {}
+      key: {}
+  sink:
+    ref:
+      apiVersion: eventing.knative.dev/v1
+      kind: Broker
+      name: kafka-broker
+      namespace: knkafkabroker
+  topics:
+    - src-topic
+
+
+
+### Create KafkaSink referred by Trigger to deliver message ------- using + sign
+
+apiVersion: eventing.knative.dev/v1alpha1
+kind: KafkaSink
+metadata:
+  name: kafka-sink
+spec:
+  bootstrapServers:
+    - 'my-cluster-kafka-bootstrap.knkafkabroker.svc:9092'
+  topic: sink-topic
+
+
+
+### Create Online and Mobile Order Trigger ------- show UI first to add Trigger from Broker UI and then  create using + sign
+
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: web-order-trigger
+spec:
+  broker: kafka-broker
+  filter:
+    attributes:
+      kafkaheadercetype: online 
+  subscriber:
+    ref:
+     apiVersion: serving.knative.dev/v1
+     kind: Service
+     name: legacy-app
+    uri: /web-order
+
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: mobile-order-trigger
+spec:
+  broker: kafka-broker
+  filter:
+    attributes:
+      kafkaheadercetype: mobile
+  subscriber:
+    ref:
+     apiVersion: eventing.knative.dev/v1alpha1
+     kind: KafkaSink
+     name: kafka-sink    
+
+
+### Connect to kafka broker pod
+
+oc rsh my-cluster-kafka-0
+
+Producer
+ 
+bin/kafka-console-producer.sh --broker-list my-cluster-kafka-bootstrap:9092 --topic src-topic  --property parse.key=true --property parse.headers=true
+
+Ce-Type:online        iphone	13-128GB
+Ce-Type:mobile       iphone     14-256GB
+
+Consumer showing kafka sink
+
+bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic sink-topic --from-beginning
+
