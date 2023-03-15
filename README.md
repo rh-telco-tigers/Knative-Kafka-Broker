@@ -1,5 +1,8 @@
 # Knative-Kafka-Broker
 
+![Demo](demo.png)
+
+The Knative Broker implementation for Apache Kafka is a Kafka-native implementation of the Knative Broker application programming interfaces (APIs). This implementation offers improvements over the channel-based Knative Broker implementation, like reduced network hops, support for any Kafka version, and better integration with Apache Kafka for the Broker and Trigger model.
 
 ## Pre-requisites 
 - Install AMQ Streams operator and create an instance of Kafka in a project ‘knkafkabroker’
