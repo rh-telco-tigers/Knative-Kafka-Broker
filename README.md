@@ -35,7 +35,7 @@ spec:
 
 
 ### Create KafkaSource using Kafka Knative Broker -------  show from UI
-    
+```  
 apiVersion: sources.knative.dev/v1beta1
 kind: KafkaSource
 metadata:
@@ -64,11 +64,11 @@ spec:
       namespace: knkafkabroker
   topics:
     - src-topic
-
+```
 
 
 ### Create KafkaSink referred by Trigger to deliver message ------- using + sign
-
+```
 apiVersion: eventing.knative.dev/v1alpha1
 kind: KafkaSink
 metadata:
@@ -77,11 +77,11 @@ spec:
   bootstrapServers:
     - 'my-cluster-kafka-bootstrap.knkafkabroker.svc:9092'
   topic: sink-topic
-
+```
 
 
 ### Create Online and Mobile Order Trigger ------- show UI first to add Trigger from Broker UI and then  create using + sign
-
+```
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
@@ -113,7 +113,7 @@ spec:
      apiVersion: eventing.knative.dev/v1alpha1
      kind: KafkaSink
      name: kafka-sink    
-
+```
 
 ### Connect to kafka broker pod
 
